@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+{% extends 'User/base/base.html' %}
+{% load static %}
+
+{% block title %}Health Center{% endblock %}
+
+{% block content %}
+
+    <h1 class="title">Recommendation System</h1>
+    
+    <div class="input-container">
+        <h2 class="subtitle">Enter Symptoms or Use Speech Recognition:</h2>
+        <input type="text" id="symptoms-input" class="input-field" placeholder="Type symptoms such as headache, fever, cough, etc.">
+        <button id="speech-btn" class="btn speech-btn">Start Speech Recognition</button>
+        <button id="predict-btn" class="btn predict-btn">Predict</button>
+    </div>
+    
+    <div id="prediction-output" class="result-section" style="display: none;">
+        <h2 class="result-title">AI Predictions</h2>
+        <div id="predictions-container" class="predictions-container"></div>
+    </div>
+
+
+<script>
+    const csrftoken = getCookie('csrftoken');
+    
+    document.getElementById('predict-btn').addEventListener('click', predictSymptoms);
+    document.getElementById('speech-btn').addEventListener('click', startSpeechRecognition);
+    
+    function predictSymptoms() {
+        const symptoms = document.getElementById('symptoms-input').value;
+        if (!symptoms) {
+            alert('Please enter symptoms');
+            return;
+        }
+        
+        fetch('/recommender/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({text_input: symptoms}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayResults(data.predictions);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+    function startSpeechRecognition() {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.start();
+        
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('symptoms-input').value = transcript;
+            predictSymptoms(); // Automatically predict after speech recognition
+        };
+        
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error', event.error);
+        };
+    }
+    
+    function displayResults(predictions) {
+        const outputDiv = document.getElementById('prediction-output');
+        const predictionsContainer = document.getElementById('predictions-container');
+        outputDiv.style.display = 'block';
+        predictionsContainer.innerHTML = '';
+        
+        predictions.forEach((prediction, index) => {
+            const predictionDiv = document.createElement('div');
+            predictionDiv.className = 'prediction-item';
+            predictionDiv.innerHTML = `
+                <h3 class="prediction-disease">Prediction: ${prediction.disease}</h3>
+                <p class="prediction-description"><strong>Description:</strong> ${prediction.description}</p>
+                <p class="prediction-precaution"><strong>Precaution:</strong> ${prediction.precaution}</p>
+                <p class="prediction-medications"><strong>Medications:</strong> ${prediction.medications}</p>
+                <p class="prediction-workouts"><strong>Workouts:</strong> ${prediction.workouts}</p>
+                <p class="prediction-diets"><strong>Diets:</strong> ${prediction.diets}</p>
+            `;
+            predictionsContainer.appendChild(predictionDiv);
+        });
+    }
+    
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<style>
+
+
+    .title, .subtitle, .result-title {
+        text-align: center;
+        color: #bee3f8;
+    }
+
+    .input-container {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .input-field {
+        width: 80%;
+        padding: 10px;
+        border: 1px solid #444;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+        font-size: 16px;
+        margin-bottom: 10px;
+        transition: border 0.3s ease;
+    }
+
+    .input-field:focus {
+        border: 1px solid #bee3f8;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        background-color: #bee3f8;
+        color: #333;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px 5px;
+        font-size: 16px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn:hover {
+        background-color: #45c9ab;
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+    .result-section {
+        background-color: #2e2e2e;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        animation: slideUp 0.8s ease-out;
+    }
+
+    .predictions-container {
+        margin-top: 10px;
+    }
+
+    .prediction-item {
+        background-color: #333;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 1s ease-out;
+    }
+
+    .prediction-disease {
+        color: #e74c3c;
+    }
+
+    .prediction-description,
+    .prediction-precaution,
+    .prediction-medications,
+    .prediction-workouts,
+    .prediction-diets {
+        margin: 5px 0;
+        color: #ccc;
+    }
+
+    .input-field::placeholder {
+        color: #ccc;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+{% endblock %}

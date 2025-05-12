@@ -1,0 +1,168 @@
+{% extends 'User/base/base.html' %}
+{% load static %}
+
+{% block title %}Heart Disease Predictor{% endblock %}
+
+{% block content %}
+    <style>
+        .heart-disease-predictor h2 {
+            text-align: center;
+            font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        color: #bee3f8;
+        animation: fadeIn 1s ease-out;
+            margin-bottom: 20px;
+        }
+
+        .heart-disease-predictor form {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #2c2f33; /* Darker form background */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .heart-disease-predictor form:hover {
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+        }
+
+        .heart-disease-predictor label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #bee3f8; /* Light blue for labels */
+        }
+
+        .heart-disease-predictor input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bee3f8; /* Green border */
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            transition: border 0.3s ease, box-shadow 0.3s ease; /* Added box-shadow transition */
+            background-color: #2c2f33; /* Matching background color */
+            color: #ffffff; /* White text for inputs */
+        }
+
+        .heart-disease-predictor input[type="text"]:focus {
+            border-color: #45c9ab; /* Light green on focus */
+            outline: none;
+            box-shadow: 0 0 5px rgba(69, 201, 171, 0.5); /* Focus shadow */
+        }
+
+        .heart-disease-predictor button[type="submit"] {
+            background: #bee3f8; /* Light blue button background */
+            color: #ffffff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px; /* More rounded button */
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            font-size: 18px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        }
+
+        .heart-disease-predictor button[type="submit"]:hover {
+            background: #45c9ab; /* Hover color */
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+        }
+
+        .heart-disease-predictor .result-container {
+            margin-top: 30px;
+            text-align: center;
+            background-color: #3a3f47; /* Darker result container */
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .heart-disease-predictor .result-container h2 {
+            color: #bee3f8; /* Light blue for result headings */
+            margin-bottom: 10px;
+        }
+
+        .heart-disease-predictor .result-container p {
+            font-size: 18px;
+            color: #cccccc; /* Light gray for result text */
+        }
+
+        .heart-disease-predictor .result-container a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #45c9ab; /* Light green for link */
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid #45c9ab; /* Light green border */
+            padding: 10px 15px;
+            border-radius: 25px; /* Rounded link button */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .heart-disease-predictor .result-container a:hover {
+            background-color: #45c9ab; /* Change to light green on hover */
+            color: white; /* White text on hover */
+            text-decoration: none;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            .heart-disease-predictor form {
+                padding: 20px;
+            }
+
+            .heart-disease-predictor button[type="submit"] {
+                font-size: 16px;
+            }
+        }
+    </style>
+
+    <div class="heart-disease-predictor">
+       
+        <form method="post">
+            <h2>Heart Disease Analysis</h2>
+            {% csrf_token %}
+            <label for="age">Age:</label>
+            <input type="text" name="age" id="age" required>
+            <label for="sex">Sex:</label>
+            <input type="text" name="sex" id="sex" required>
+            <label for="cp">Chest Pain Type:</label>
+            <input type="text" name="cp" id="cp" required>
+            <label for="trestbps">Resting Blood Pressure:</label>
+            <input type="text" name="trestbps" id="trestbps" required>
+            <label for="chol">Cholesterol:</label>
+            <input type="text" name="chol" id="chol" required>
+            <label for="fbs">Fasting Blood Sugar:</label>
+            <input type="text" name="fbs" id="fbs" required>
+            <label for="restecg">Resting ECG Results:</label>
+            <input type="text" name="restecg" id="restecg" required>
+            <label for="thalach">Maximum Heart Rate Achieved:</label>
+            <input type="text" name="thalach" id="thalach" required>
+            <label for="exang">Exercise Induced Angina:</label>
+            <input type="text" name="exang" id="exang" required>
+            <label for="oldpeak">Oldpeak:</label>
+            <input type="text" name="oldpeak" id="oldpeak" required>
+            <label for="slope">Slope:</label>
+            <input type="text" name="slope" id="slope" required>
+            <label for="ca">Number of Major Vessels:</label>
+            <input type="text" name="ca" id="ca" required>
+            <label for="thal">Thal:</label>
+            <input type="text" name="thal" id="thal" required>
+            <button type="submit">Predict</button>
+        </form>
+        
+        {% if result %}
+        <div class="result-container">
+            <h2>Prediction Result</h2>
+            <p>{{ result }}</p>
+            <a href="{% url 'heart' %}">Predict Again</a>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

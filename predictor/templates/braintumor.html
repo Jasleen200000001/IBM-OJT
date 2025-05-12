@@ -1,0 +1,137 @@
+{% extends 'User/base/base.html' %}
+{% load static %}
+
+{% block title %}Brain Tumor Detection{% endblock %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #1b1b1b;
+        font-family: 'Arial', sans-serif;
+        color: #f1f1f1;
+    }
+
+    .main-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .heading {
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        color: #bee3f8;
+        animation: fadeIn 1s ease-out;
+    }
+
+    .description {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        color: #cccccc;
+        animation: fadeIn 1.5s ease-out;
+    }
+
+    .form-container {
+        background-color: #2b2b2b;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        max-width: 500px;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .file-input-container {
+        margin-bottom: 1.5rem;
+    }
+
+    .file-label {
+        font-size: 1.125rem;
+        color: #bee3f8;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .file-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #444;
+        border-radius: 8px;
+        background-color: #333;
+        color: #fff;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .file-input:hover, .file-input:focus {
+        border-color: #45c9ab;
+        outline: none;
+    }
+
+    .submit-btn {
+        width: 100%;
+        background-color: #bee3f8;
+        color: #333;
+        padding: 12px;
+        font-size: 1.125rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #45c9ab;
+        transform: scale(1.05);
+        color: #fff;
+    }
+
+    .error-message {
+        color: #e74c3c;
+        margin-top: 1rem;
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+    <h1 class="heading">Brain Tumor Detection</h1>
+    <p class="description">Upload an image to get a prediction</p>
+
+    <form action="{% url 'braintumor' %}" method="post" enctype="multipart/form-data" class="form-container">
+        {% csrf_token %}
+        <div class="file-input-container">
+            <label for="image" class="file-label">Select an Image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required class="file-input">
+        </div>
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+
+    {% if error %}
+        <p class="error-message">{{ error }}</p>
+    {% endif %}
+
+
+
+{% endblock %}

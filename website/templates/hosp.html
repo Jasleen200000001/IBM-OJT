@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Finder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #bee3f8; /* Primary color */
+            --secondary-color: #8ec9eb; /* Secondary color */
+            --background-color: #1f1f1f; /* Dark background color */
+            --text-color: #ffffff; /* Text color */
+            --card-bg-color: #292929; /* Card background color */
+            --card-shadow: rgba(0, 0, 0, 0.5); /* Card shadow for dark theme */
+            --hover-shadow: rgba(0, 0, 0, 0.3); /* Hover shadow effect */
+            --button-hover: #45c9ab; /* Button hover color */
+            --border-color: #444; /* Border color */
+            --name-color: #ffffff; /* Hospital name color */
+            --name-hover: #00ffaf; /* Hospital name hover color */
+            --transition-speed: 0.3s; /* Transition speed */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6; /* Improved line height for readability */
+        }
+
+        .header {
+            background-color: #2a2a2a;
+            padding: 1rem;
+            box-shadow: 0 2px 4px var(--card-shadow);
+            transition: background-color var(--transition-speed);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 1rem;
+            transition: color var(--transition-speed);
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add shadow on hover */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--card-bg-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--card-shadow);
+            text-align: center;
+            transition: background-color var(--transition-speed);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 85%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--card-bg-color);
+            color: var(--text-color);
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px var(--primary-color);
+            width: 70%;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+            transform: scale(1.05); /* Slight scale effect on hover */
+        }
+
+        #hospitalList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .hospital {
+            background-color: var(--card-bg-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--card-shadow);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            text-align: center;
+        }
+
+        .hospital:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px var(--hover-shadow);
+        }
+
+        .hospital h2 {
+            color: var(--name-color);
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            transition: color var(--transition-speed);
+        }
+
+        .hospital h2:hover {
+            color: var(--name-hover);
+        }
+
+        .hospital p {
+            color: #cccccc; /* Light gray for additional text */
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            button {
+                padding: 0.8rem;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.6rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+                margin-left: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo"><a href="{% url 'home' %}">MedViz</a></div>
+            <div class="nav-links">
+                <a href="{% url 'team' %}">Our team</a>
+                <a href="{% url 'login' %}">SignUp / Login</a>
+                <a href="{% url 'find_hospital' %}">Find Hospital</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Find Nearest Hospitals</h1>
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="address">Enter address</label>
+            <input class="w" type="text" id="address" placeholder="Enter address">
+        </div>
+        <button onclick="findHospital()">Find Hospitals</button>
+        <div id="result">
+            <!-- Hospital list will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function findHospital() {
+            var address = document.getElementById('address').value;
+            fetch('/find_hospital/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({address: address}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const hospitals = data.hospitals;
+                    let resultHtml = '<div id="hospitalList">';
+                    hospitals.forEach(hospital => {
+                        resultHtml += `
+                            <div class="hospital">
+                                <h2>${hospital.name}</h2>
+                                <p>Latitude: ${hospital.lat}</p>
+                                <p>Longitude: ${hospital.lng}</p>
+                            </div>
+                        `;
+                    });
+                    resultHtml += '</div>';
+                    document.getElementById('result').innerHTML = resultHtml;
+                } else {
+                    document.getElementById('result').innerHTML = data.message;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
